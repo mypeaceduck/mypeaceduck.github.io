@@ -1,11 +1,16 @@
 /* style.css */
 body {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
   margin: 0;
   font-family: Arial, sans-serif;
+}
+
+#controls {
+  margin-bottom: 20px;
 }
 
 #maze-container {
@@ -16,7 +21,7 @@ body {
 
 #maze {
   display: grid;
-  grid-template-columns: repeat(10, 50px); /* Adjust the grid size as needed */
+  grid-template-columns: repeat(10, 50px);
   grid-template-rows: repeat(10, 50px);
   gap: 2px;
 }
@@ -26,6 +31,7 @@ body {
   height: 50px;
   border: 1px solid #ccc;
   background-color: #f0f0f0;
+  cursor: pointer;
 }
 
 .wall {
