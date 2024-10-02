@@ -1,0 +1,41 @@
+/* style.css */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+#maze-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#maze {
+  display: grid;
+  grid-template-columns: repeat(10, 50px); /* Adjust the grid size as needed */
+  grid-template-rows: repeat(10, 50px);
+  gap: 2px;
+}
+
+.cell {
+  width: 50px;
+  height: 50px;
+  border: 1px solid #ccc;
+  background-color: #f0f0f0;
+}
+
+.wall {
+  background-color: #333;
+}
+
+.player {
+  background-color: #ff5733;
+}
+
+.goal {
+  background-color: #4caf50;
+}
