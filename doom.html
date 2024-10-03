@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doom-like Movement</title>
+    <style>
+        body, html {
+            margin: 0;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Room configuration
+        const map = [
+            [1, 1, 1, 1, 1],
+            [1, 0, 0, 0, 1],
+            [1, 0, 1, 0, 1],
+            [1, 0, 0, 0, 1],
+            [1, 1, 1, 1, 1]
+        ];
+
+        const TILE_SIZE = 100;
+        const PLAYER_SPEED = 2;
+        const PLAYER_TURN_SPEED = 0.05;
+
+        let player = {
+            x: 150,
+            y: 150,
+            angle: 0
+        };
+
+        function drawMap() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "black";
+
+            for (let y = 0; y < map.length; y++) {
+                for (let x = 0; x < map[y].length; x++) {
+                    if (map[y][x] === 1) {
+                        ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                    }
+                }
+            }
+        }
+
+        function castRays() {
+            const RAY_COUNT = canvas.width;
+            const FOV = Math.PI / 4;
+
+            for (let i = 0; i < RAY_COUNT; i++) {
+                const rayAngle = player.angle - FOV / 2 + (i / RAY_COUNT) * FOV;
+                const distanceToWall = raycast(rayAngle);
+                const wallHeight = Math.min(20000 / distanceToWall, canvas.height);
+
+                ctx.fillStyle = "black";
+                ctx.fillRect(i, (canvas.height / 2) - wallHeight / 2, 1, wallHeight);
+            }
+        }
+
+        function raycast(angle) {
+            let rayX = player.x;
+            let rayY = player.y;
+
+            const rayStepX = Math.cos(angle);
+            const rayStepY = Math.sin(angle);
+
+            while (true) {
+                rayX += rayStepX;
+                rayY += rayStepY;
+
+                const mapX = Math.floor(rayX / TILE_SIZE);
+                const mapY = Math.floor(rayY / TILE_SIZE);
+
+                if (map[mapY] && map[mapY][mapX] === 1) {
+                    const distance = Math.sqrt(Math.pow(rayX - player.x, 2) + Math.pow(rayY - player.y, 2));
+                    return distance;
+                }
+            }
+        }
+
+        function movePlayer() {
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'ArrowUp') {
+                    player.x += Math.cos(player.angle) * PLAYER_SPEED;
+                    player.y += Math.sin(player.angle) * PLAYER_SPEED;
+                }
+                if (event.key === 'ArrowDown') {
+                    player.x -= Math.cos(player.angle) * PLAYER_SPEED;
+                    player.y -= Math.sin(player.angle) * PLAYER_SPEED;
+                }
+                if (event.key === 'ArrowLeft') {
+                    player.angle -= PLAYER_TURN_SPEED;
+                }
+                if (event.key === 'ArrowRight') {
+                    player.angle += PLAYER_TURN_SPEED;
+                }
+
+                drawFrame();
+            });
+        }
+
+        function drawFrame() {
+            drawMap();
+            castRays();
+        }
+
+        movePlayer();
+        drawFrame();
+
+    </script>
+</body>
+</html>
